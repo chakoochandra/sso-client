@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../src/Broker.php';
 
-//$broker = new Jasny\SSO\Broker(getenv('SSO_SERVER'), getenv('SSO_BROKER_ID'), getenv('SSO_BROKER_SECRET'));
-$broker = new Broker('http://localhost/sikep/idpserver/web/', 'myapp', 'wXLe6w1VB4');
+$broker = new Broker();
+
 $error = $_GET['sso_error'];
 ?>
 

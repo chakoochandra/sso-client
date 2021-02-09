@@ -8,6 +8,17 @@
  */
 class Broker
 {
+    // example :
+    // const SSO_SERVER = getenv('SSO_SERVER');
+    // const BROKER_ID = getenv('BROKER_ID');
+    // const BROKER_SECRET = getenv('BROKER_SECRET');
+    // const SSO_SERVER = 'http://localhost/sikep_sso/backend/web/site';
+    const SSO_SERVER = 'http://localhost/sikep/idpserver/web/site/training';
+    const BROKER_ID = 'aplikasiku';
+    const BROKER_SECRET = 'wXLe6w1VB4';
+
+    const COOKIE_LIFETIME = 3600; //seconds
+
     /**
      * Url of SSO server
      * @var string
@@ -42,7 +53,7 @@ class Broker
      * Cookie lifetime
      * @var int
      */
-    protected $cookie_lifetime;
+    protected $cookie_lifetime; //seconds
 
     /**
      * Class constructor
@@ -51,7 +62,7 @@ class Broker
      * @param string $broker My identifier, given by SSO provider.
      * @param string $secret My secret word, given by SSO provider.
      */
-    public function __construct($url, $broker, $secret, $cookie_lifetime = 3600)
+    public function __construct($url = self::SSO_SERVER, $broker = self::BROKER_ID, $secret = self::BROKER_SECRET, $cookie_lifetime = self::COOKIE_LIFETIME)
     {
         if (!$url) throw new \InvalidArgumentException("SSO server URL not specified");
         if (!$broker) throw new \InvalidArgumentException("SSO broker id not specified");
@@ -210,7 +221,7 @@ class Broker
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         list($contentType) = explode(';', curl_getinfo($ch, CURLINFO_CONTENT_TYPE));
 
-        if ($contentType != 'application/json') {
+        if ($response && $contentType != 'application/json') {
             $message = 'Expected application/json response, got ' . $contentType;
             throw new Exception($message);
         }

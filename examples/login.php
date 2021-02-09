@@ -4,14 +4,17 @@ require_once __DIR__ . '/../src/Broker.php';
 require_once __DIR__ . '/../src/SSOException.php';
 require_once __DIR__ . '/../src/NotAttachedException.php';
 
-//$broker = new Jasny\SSO\Broker(getenv('SSO_SERVER'), getenv('SSO_BROKER_ID'), getenv('SSO_BROKER_SECRET'));
-$broker = new Broker('http://localhost/sikep/idpserver/web/', 'myapp', 'wXLe6w1VB4');
+$broker = new Broker();
 $broker->attach(true);
 
 try {
+    $user = $broker->getUserInfo();
+
     if (!empty($_GET['logout'])) {
         $broker->logout();
-    } elseif ($broker->getUserInfo() || ($_SERVER['REQUEST_METHOD'] == 'POST' && $broker->login($_POST['username'], $_POST['password']))) {
+        header("Location: login.php", true, 307);
+        exit;
+    } elseif ($user || ($_SERVER['REQUEST_METHOD'] == 'POST' && $broker->login($_POST['username'], $_POST['password']))) {
         header("Location: index.php", true, 303);
         exit;
     }
@@ -65,6 +68,11 @@ try {
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-default">Login</button>
+                </div>
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a href="<?= "http://localhost/sikep/backend/web/sso-login"; ?>">
+                        Login menggunakan Akun SIKEP
+                    </a>
                 </div>
             </div>
         </form>

@@ -9,12 +9,15 @@ if (isset($_GET['sso_error'])) {
     exit;
 }
 
-//$broker = new Jasny\SSO\Broker(getenv('SSO_SERVER'), getenv('SSO_BROKER_ID'), getenv('SSO_BROKER_SECRET'));
-$broker = new Broker('http://localhost/sikep/idpserver/web/', 'myapp', 'wXLe6w1VB4');
+$broker = new Broker();
 $broker->attach(true);
 
 try {
     $user = $broker->getUserInfo();
+    if (!$user) {
+        header("Location: login.php", true, 307);
+        exit;
+    }
 } catch (NotAttachedException $e) {
     header('Location: ' . $_SERVER['REQUEST_URI']);
     exit;
@@ -22,11 +25,6 @@ try {
     header("Location: error.php?sso_error=" . $e->getMessage(), true, 307);
 } catch (Exception $e) {
     $errmsg = $e->getMessage();
-}
-
-if (!$user) {
-    header("Location: login.php", true, 307);
-    exit;
 }
 ?>
 
