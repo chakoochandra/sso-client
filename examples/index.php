@@ -11,10 +11,9 @@ if (isset($_GET['sso_error'])) {
 
 $broker = new Broker();
 $broker->attach(true);
-
 try {
-    $user = $broker->getUserInfo();
-    if (!$user) {
+    //kalau session user tidak ada, redirect ke halaman login
+    if (!($user = $broker->getUserInfo())) {
         header("Location: login.php", true, 307);
         exit;
     }
@@ -30,7 +29,6 @@ try {
 
 <!doctype html>
 <html>
-
 <head>
     <title><?= $broker->broker ?> (Single Sign-On demo)</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">

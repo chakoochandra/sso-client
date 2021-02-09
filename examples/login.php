@@ -6,21 +6,19 @@ require_once __DIR__ . '/../src/NotAttachedException.php';
 
 $broker = new Broker();
 $broker->attach(true);
-
 try {
-    $user = $broker->getUserInfo();
-
     if (!empty($_GET['logout'])) {
+        //bila user logout, panggil $broker->logout()
         $broker->logout();
         header("Location: login.php", true, 307);
         exit;
-    } elseif ($user || ($_SERVER['REQUEST_METHOD'] == 'POST' && $broker->login($_POST['username'], $_POST['password']))) {
+    }
+
+    if (($user = $broker->getUserInfo())) {
+        //bila data user sudah ada, redirect user ke halaman index
         header("Location: index.php", true, 303);
         exit;
     }
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST')
-        $errmsg = "Login failed";
 } catch (NotAttachedException $e) {
     header('Location: ' . $_SERVER['REQUEST_URI']);
     exit;
@@ -37,7 +35,6 @@ try {
 <head>
     <title><?= $broker->broker ?> | Login (Single Sign-On demo)</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
         h1 {
             margin-bottom: 30px;
